@@ -1,3 +1,7 @@
 * {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+#display #city-and-date span {
+    font-size: .75em;
+}

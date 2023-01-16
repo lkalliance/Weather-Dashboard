@@ -12,6 +12,9 @@ const jSearchList = $("#previous-searches");    // ul container for cities searc
 const jWhereWhen = $("#city-and-date");         // h3 with city name and date
 const jCurrent = $("#current");                 // container for current conditions
 const jForecast = $("#five-day");               // container for forecast cards
+const jTempNow = $("#temp-now");
+const jWindNow = $("#wind-now");
+const jHumidityNow = $("#humidity-now");
 
 
 
@@ -25,9 +28,7 @@ let latlon = "test";
 jSearchBtn.on("click", function() {
     if(jCityInput.val() == "") return;
     else {
-        jWhereWhen.empty();
     //    console.log(jWhereWhen.text());
-        jCurrent.empty();
         getData(("q=" + jCityInput.val()));
     }
 })
@@ -37,7 +38,7 @@ function getData(where) {
     .then(function(response) {
         return response.json();
     })
-    .then(function(data) {
+    .then(function(data) {        
         latlon = "lat=" + data[0].lat + "&lon=" + data[0].lon;
      //   console.log(data);
         fetch((forecastAPIstart + latlon + "&units=imperial" + APIlimit + APIkey))
@@ -45,7 +46,7 @@ function getData(where) {
             return(response.json());
         })
         .then(function(data) {
-         //   console.log(data);
+            console.log(data);
             let dt = dayjs(data.dt*1000).format("ddd, MMM DD, h:mm A");
             let jNewSpan = $("<span>");
             jNewSpan.text((" (" + dt + ")"))
@@ -53,19 +54,11 @@ function getData(where) {
       //      console.log(jWhereWhen.text());
             jWhereWhen.append(jNewSpan);
 
-            let jTempNow = $("<p>");
-            jCurrent.append(jTempNow);
             jTempNow.text("Temp: " + data.main.temp + "°F");
-
-            let jWindNow = $("<p>");
-            jCurrent.append(jWindNow);
             jWindNow.text("Wind: " + data.wind.speed + " MPH");
+            jHumidityNow.text("Humidity: " + data.main.humidity + "%");
 
-            let jHumNow = $("<p>");
-            jCurrent.append(jHumNow);
-            jHumNow.text("Humidity: " + data.main.humidity + "%");
-
-            let imgURL = "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
+            let imgURL = "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
             let icon = $("<img>");
             icon.attr("src", imgURL);
             jWhereWhen.append(icon);
@@ -109,27 +102,31 @@ function getData(where) {
 
                 Object.entries(dayData).forEach(function(thisDay) {
                     card = $("<div>");
-                    card.addClass("card col-2");
+                    card.addClass("card p-0 col");
                     jForecast.append(card);
-                    day = $("<h3>");
+                    day = $("<h4>");
                     day.text(thisDay[0]);
-                    day.addClass("card-header");
+                    day.addClass("card-header fs-6 fw-bold text-white bg-secondary");
                     card.append(day);
 
-                    temp = $("<p>");
-                    temp.addClass("card-body");
-                    temp.text("Temp: " + thisDay[1].lowtemp + " - " + thisDay[1].hightemp + "°F");
-                    card.append(temp);
+                    conditions = $("<ul>");
+                    conditions.addClass("list-group list-group-flush");
+                    card.append(conditions);
 
-                    wind = $("<p>");
-                    wind.addClass("card-body");
-                    wind.text("Wind: " + thisDay[1].highwind + " MPH");
-                    card.append(wind);
+                    temp = $("<li>");
+                    temp.addClass("list-group-item");
+                    temp.text("Temp: " + Math.round(thisDay[1].lowtemp) + " - " + Math.round(thisDay[1].hightemp) + "°F");
+                    conditions.append(temp);
 
-                    humidity = $("<p>");
-                    humidity.addClass("card-body");
+                    wind = $("<li>");
+                    wind.addClass("list-group-item");
+                    wind.text("Wind: " + Math.round(thisDay[1].highwind) + " MPH");
+                    conditions.append(wind);
+
+                    humidity = $("<li>");
+                    humidity.addClass("list-group-item");
                     humidity.text("Humidity: " + thisDay[1].highhumidity + "%");
-                    card.append(humidity);
+                    conditions.append(humidity);
                 });
 
                 })

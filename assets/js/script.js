@@ -5,9 +5,11 @@ dayjs.extend(window.dayjs_plugin_utc);
 // Pieces of API calls for reference
 const todayAPIstart = "https://api.openweathermap.org/data/2.5/weather?";
 const forecastAPIstart = "https://api.openweathermap.org/data/2.5/forecast?";
+const onecallAPIstart = "https://api.openweathermap.org/data/3.0/onecall?";
 const latlonAPIstart = "https://api.openweathermap.org/geo/1.0/direct?q=";
 const APIlimit = "&limit=5";
 const APIunits = "&units=imperial";
+const APIexclude = "&exclude=minutely,hourly,alerts";
 const APIkey = "&appid=7897ccda0965301a098fbfd75fe1b4aa";
 
 // Various containers
@@ -73,13 +75,13 @@ function searchStart(city) {
 
             // if nothing is returned, leave
             if(data.length==0) return;
+            console.log(data);
             // if something is returned, construct string out of first one
             latlonString = "lat=" + data[0].lat + "&lon=" + data[0].lon;
             // clear out the existing forecast cards
             jForecast.empty();
-            // kick off both queries
-            getToday(latlonString);
-            getForecast(latlonString);
+            // query the weather data
+            getOneCall(latlonString, data[0].name);
             // clear the input field
             jCityInput.val("");
         })
@@ -89,130 +91,111 @@ function searchStart(city) {
 }
 
 
-function getToday(latlon) {
-    // This function gets today's forecast and constructs that section
-    // parameter "latlon" is the latitude and longitude query string
+function getOneCall(latlon, name) {
+    // This function makes the main data call for the weather
 
-    let query = todayAPIstart + latlon + APIunits + APIkey;
+    let query = onecallAPIstart + latlon + APIunits + APIexclude + APIkey;
+    // do the fetch
     fetch(query)
         .then(function(response) {
             return(response.json());
         })
         .then(function(data) {
             // parameter "data" is the returned object
-            
-            // construct the day and time string
-            let dDateTime = dayjs((data.dt + data.timezone)*1000).utc().format("ddd, MMM DD, h:mm A");
-        
-            // is the sun up?
-            let daytime = (data.dt > data.sys.sunrise) && (data.dt < data.sys.sunset);
-
-            // set the correct style for the main headline
-            setConditions(daytime, data.weather[0].id);
-            
-            // put the city name into the headline
-            jWhereWhen.text(data.name);
-            // create the time indicator and attach it
-            let jNewSpan = $("<span>");
-            jNewSpan.text((" (" + dDateTime + ")"))
-            jWhereWhen.append(jNewSpan);
-            // fill in the temp, wind and humidity
-            jTempNow.text("Temp: " + data.main.temp + "°F");
-            jWindNow.text("Wind: " + data.wind.speed + " MPH");
-            jHumidityNow.text("Humidity: " + data.main.humidity + "%");
-            // now add the icon
-            let imgURL = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
-            let jIcon = $("<img>");
-            jIcon.attr("src", imgURL);
-            jWhereWhen.append(jIcon);
+            drawToday(data.current, data.timezone_offset, name);
+            drawForecast(data.daily, data.timezone_offset);
+        })
+        .catch(function(err) {
+            console.log(err);
         })
 }
 
 
-function getForecast(latlon) {
+function drawToday(current, offset, city) {
+    // OMG will this actually work????
+    // parameter "current" is the current weather object
+    // parameter "offset" is the time zone offset
+    // parameter "city" is the city name
+
+    // construct the day and time string
+    let dDateTime = dayjs((current.dt + offset)*1000).utc().format("ddd, MMM DD, h:mm A");
+    // is the sun up?
+    let daytime = (current.dt > current.sunrise) && (current.dt < current.sunset);
+    // set the correct style for the main headline
+    setConditions(daytime, current.weather[0].id, jWhereWhen);
+    // put the city name into the headline
+    jWhereWhen.text(city);
+    // create the time indicator and attach it
+    let jNewSpan = $("<span>");
+    jNewSpan.text((" (" + dDateTime + ")"))
+    jWhereWhen.append(jNewSpan);
+    // fill in the temp, wind and humidity
+    jTempNow.text("Temp: " + current.temp + "°F");
+    jWindNow.text("Wind: " + current.wind_speed + " MPH");
+    jHumidityNow.text("Humidity: " + current.humidity + "%");
+    // now add the icon
+    let imgURL = "https://openweathermap.org/img/wn/" + current.weather[0].icon + ".png";
+    let jIcon = $("<img>");
+    jIcon.attr("src", imgURL);
+    jWhereWhen.append(jIcon);
+}
+
+
+function drawForecast(daily, offset) {
     // This function gets the 5-day forecast and constructs that section
-    // parameter "latlon" is the latitude and longitude query string
+    // parameter "daily" is the daily weather array
+    // parameter "offset" is the time zone offset      
 
-    let query = forecastAPIstart + latlon + APIunits + APIkey;
-    fetch(query)
-        .then(function(response) {
-            return(response.json());
-        })
-        .then(function(data) {
-            // parameter "data" is the returned object
-                
-            // we need to figure out the highs and lows for each day
-            let dayData = {};
-            // first create an empty object
-            for (let i=0; i<5; i++) {
-                // creating an object with an index of a date string
-                dayData[dayjs().add(i, 'day').format('M/D/YYYY')] = {
-                    hightemp: 0,
-                    lowtemp: 999,
-                    highwind: 0,
-                    highhumidity: 0
-                };
-            }
-            // now we iterate over everything
-            let index, item, record = {};
-            for(let i=0; i<data.list.length; i++) {
-                // "item" is the next object in the data
-                item = data.list[i];
-                if(dayData[dayjs(item.dt*1000).format('M/D/YYYY')]) {
-                    // if an object of this date index exists on our tracker...
-                    // "record" is this date's object
-                    record = dayData[dayjs(item.dt*1000).format('M/D/YYYY')];
-                    // compare each value to the "item" value and update if called for
-                    record.hightemp = Math.max(record.hightemp, item.main.temp_max);
-                    record.lowtemp = Math.min(record.lowtemp, item.main.temp_min);
-                    record.highwind = Math.max(record.highwind, item.wind.speed);
-                    record.highhumidity = Math.max(record.highhumidity, item.main.humidity);
-                }
-            }
-
-            let jCard, jDay, jConditions, jTemp, jWind, jHumidity;
-            // now turn our data into an array, and iterate, creating forecast cards
-            Object.entries(dayData).forEach(function(thisDay) {
-                // parameter "thisDay" is the object with this day's data
-
-                // create the main card and append it
-                jCard = $("<div>");
-                jCard.addClass("card p-0 me-1 col");
-                jForecast.append(jCard);
-                // create the title with the date and append it
-                jDay = $("<h4>");
-                jDay.text(thisDay[0]);
-                jDay.addClass("card-header fs-6 fw-bold text-white bg-secondary");
-                jCard.append(jDay);
-                // create the ul to hold the various conditions and append it
-                jConditions = $("<ul>");
-                jConditions.addClass("list-group list-group-flush");
-                jCard.append(jConditions);
-                // create the temperature range and append it
-                jTemp = $("<li>");
-                jTemp.addClass("list-group-item");
-                jTemp.text("Temp: " + Math.round(thisDay[1].lowtemp) + " - " + Math.round(thisDay[1].hightemp) + "°F");
-                jConditions.append(jTemp);
-                // create the high windspeed and append it
-                jWind = $("<li>");
-                jWind.addClass("list-group-item");
-                jWind.text("Wind: " + Math.round(thisDay[1].highwind) + " MPH");
-                jConditions.append(jWind);
-                // create the high humidity and apped it
-                jHumidity = $("<li>");
-                jHumidity.addClass("list-group-item");
-                jHumidity.text("Humidity: " + thisDay[1].highhumidity + "%");
-                jConditions.append(jHumidity);
-            });
-
-        })
+    let thisDay, jCard, jDay, jConditions, jTemp, jWind, jHumidity, jIcon, imgURL;
+    // iterate over the array, creating forecast cards
+    for (let i = 0; i < 5; i++ ) {
+        // variable "thisDay" is the object with this day's data
+        thisDay = daily[i]
+        dDate = dayjs((thisDay.dt + offset)*1000).utc().format("ddd, MMM DD");
+        // create the main card and append it
+        jCard = $("<div>");
+        jCard.addClass("card p-0 me-1 col");
+        jForecast.append(jCard);
+        // create the title with the date and append it
+        jDay = $("<h4>");
+        jDay.text(dDate);
+        jDay.addClass("card-header fs-6 fw-bold");
+        setConditions(true, thisDay.weather[0].id, jDay);
+        jCard.append(jDay);
+        // create the ul to hold the various conditions and append it
+        jConditions = $("<ul>");
+        jConditions.addClass("list-group list-group-flush");
+        jCard.append(jConditions);
+        // create the temperature range and append it
+        jTemp = $("<li>");
+        jTemp.addClass("list-group-item pe-5");
+        jTemp.text("Temp: " + Math.round(thisDay.temp.min) + " - " + Math.round(thisDay.temp.max) + "°F");
+        jConditions.append(jTemp);
+        // create the high windspeed and append it
+        jWind = $("<li>");
+        jWind.addClass("list-group-item");
+        jWind.text("Wind: " + Math.round(thisDay.wind_speed) + " MPH");
+        jConditions.append(jWind);
+        // create the high humidity and append it
+        jHumidity = $("<li>");
+        jHumidity.addClass("list-group-item");
+        jHumidity.text("Humidity: " + thisDay.humidity + "%");
+        jConditions.append(jHumidity);
+        // create an icon and append it
+        imgURL = "https://openweathermap.org/img/wn/" + thisDay.weather[0].icon + ".png";
+        jIcon = $("<img>");
+        jIcon.attr("src", imgURL);
+        jTemp.append(jIcon);
+       
+    }
 }
 
 
-function setConditions(daytime, code) {
+function setConditions(daytime, code, container) {
     // This function applies a class to the main card header
     // parameter "daytime" is a boolean: is it daytime?
     // parameter "code" is the weather code returned by OpenWeatnerMaps
+    // parameter "container" is where the style is being applied
 
     let conditions;
     // start with a check of nighttime or daytime and default to overcast
@@ -221,9 +204,9 @@ function setConditions(daytime, code) {
     if ( daytime && (code >= 800) && (code <= 802) ) conditions = "sunny";
 
     // now toggle the right classes
-    jWhereWhen.toggleClass("nighttime", (conditions == "nighttime"));
-    jWhereWhen.toggleClass("sunny", (conditions == "sunny"));
-    jWhereWhen.toggleClass("overcast", (conditions == "overcast"));
+    container.toggleClass("nighttime", (conditions == "nighttime"));
+    container.toggleClass("sunny", (conditions == "sunny"));
+    container.toggleClass("overcast", (conditions == "overcast"));
 }
 
 

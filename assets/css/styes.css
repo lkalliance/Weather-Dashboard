@@ -7,7 +7,19 @@
     bottom: 0;
 }
 
+.card li img {
+    position: absolute;
+    margin-left: 4px;
+    top: 0;
+    right: 2px;
+    width: 40px;
+}
+
 #city-and-date {
+    position: relative;
+}
+
+.card li {
     position: relative;
 }
 

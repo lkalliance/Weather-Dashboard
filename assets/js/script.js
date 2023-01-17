@@ -121,7 +121,7 @@ function getToday(latlon) {
             jWindNow.text("Wind: " + data.wind.speed + " MPH");
             jHumidityNow.text("Humidity: " + data.main.humidity + "%");
             // now add the icon
-            let imgURL = "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
+            let imgURL = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
             let jIcon = $("<img>");
             jIcon.attr("src", imgURL);
             jWhereWhen.append(jIcon);

@@ -12,9 +12,9 @@
     <header>
         <h1>Weather Dashboard</h1>
     </header>
-    <main class="container">
+    <main class="container ms-2 me-2">
         <div class="row">
-            <section id="search" class="col-4">
+            <section id="search" class="col-3">
                 <label for="city-input" class="form-label">Search for a City:</label>
                 <input type="text" id="city-input" class="form-control" aria-describedby="city-search">
                 <div id="city-search" class="form-text">Enter a city, state and/or country</div>
@@ -22,15 +22,18 @@
                 <ul id="previous-searches">
                 </ul>
             </section>
-            <section id="display" class="col-8">
-                <section>
-                    <h2 id="city-and-date"></h2>
-                    <div id="current"></div>
+            <section id="display" class="col-9">
+                <section class="card me-1">
+                    <h2 id="city-and-date" class="card-header">Search for a city</h2>
+                    <ul id="current" class="list-group list-group-flush">
+                        <li id="temp-now" class="list-group-item">Temp: </li>
+                        <li id="wind-now" class="list-group-item">Wind: </li>
+                        <li id="humidity-now" class="list-group-item">Humidity: </li>
+                    </ul>
                 </section>
-                <section class="container">
-                    <h3 class="row col-12">5-Day Forecast:</h3>
-                    <div id="five-day" class="row">
-
+                <section class="container p-0 mt-3">
+                    <h3 class="fs-4">5-Day Forecast:</h3>
+                    <div id="five-day" class="row ms-0 me-0">
                     </div>
                 </section>
             </section>

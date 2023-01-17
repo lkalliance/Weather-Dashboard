@@ -1,3 +1,27 @@
 #display #city-and-date span {
     font-size: .75em;
 }
+
+#city-and-date img {
+    position: absolute;
+    bottom: 0;
+}
+
+#city-and-date {
+    position: relative;
+}
+
+.nighttime {
+    background-color: #cccccc;
+    color: black;
+}
+
+.sunny {
+    background-color: cornflowerblue;
+    color: gold;
+}
+
+.overcast {
+    background-color: lightslategray;
+    color: #eeeeee;
+}

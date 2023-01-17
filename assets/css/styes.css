@@ -21,6 +21,7 @@
 
 .card li {
     position: relative;
+    background-color: #cccccc;
 }
 
 .nighttime {

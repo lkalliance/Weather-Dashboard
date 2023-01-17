@@ -3,8 +3,6 @@ dayjs.extend(window.dayjs_plugin_utc);
 // GLOBAL DECLARATIONS
 
 // Pieces of API calls for reference
-const todayAPIstart = "https://api.openweathermap.org/data/2.5/weather?";
-const forecastAPIstart = "https://api.openweathermap.org/data/2.5/forecast?";
 const onecallAPIstart = "https://api.openweathermap.org/data/3.0/onecall?";
 const latlonAPIstart = "https://api.openweathermap.org/geo/1.0/direct?q=";
 const APIlimit = "&limit=5";

@@ -26,19 +26,56 @@ const jHumidityNow = $("#humidity-now");        // container for current humidit
 
 // ---- INITIALIZATION ----
 
-// put listeners on the search button and on a "return" keypress
-jSearchBtn.on("click", function(e) {
-    e.preventDefault();
-    searchSetup();
-});
-jCityInput.on("keyup", function(e) {
-    e.preventDefault();
-    if(e.keyCode == 13) searchSetup();
-})
+initialize();
+
 
 
 
 // ---- FUNCTION DECLARATIONS ----
+
+
+function initialize() {
+    // This function does all some page setup tasks
+
+    // add some listeners
+
+    jSearchBtn.on("click", function(e) {
+        // this listener is on the search button
+        e.preventDefault();
+        searchSetup();
+    });
+    jCityInput.on("keyup", function(e) {
+        // this listener is for pressing return in the search
+        e.preventDefault();
+        if(e.keyCode == 13) searchSetup();
+    });
+    jSearchList.on("click", "a", function(e) {
+        e.preventDefault();
+        let latlon = e.target.dataset.sendto;
+        let city = e.target.textContent;
+        // empty the forecast cards
+        jForecast.empty();
+        // skip the search setup and go right to the data call
+        getOneCall(latlon, city);
+    })
+
+    //render the saved searches
+    let rawSaved = localStorage.getItem("savedWeather");
+    let savedArray = [], jNextLink;
+    if (rawSaved) {
+        savedArray = JSON.parse(rawSaved);
+        console.log(savedArray);
+        for ( let i = 0; i < savedArray.length; i++ ) {
+            jNextLink = $("<a>");
+            jNextLink.attr("href", "#");
+            jNextLink.attr("data-sendto", savedArray[i].location);
+            jNextLink.text(savedArray[i].city);
+            jNextLink.addClass("list-group-item");
+            jSearchList.append(jNextLink);
+        }
+    }
+
+}
 
 
 function searchSetup() {
@@ -82,6 +119,8 @@ function searchStart(city) {
             getOneCall(latlonString, data[0].name);
             // clear the input field
             jCityInput.val("");
+            // save the search
+            saveSearch(city,latlonString);
         })
         .catch(function(err) {
             console.log(err);
@@ -142,7 +181,10 @@ function drawToday(current, offset, city) {
 function drawForecast(daily, offset) {
     // This function gets the 5-day forecast and constructs that section
     // parameter "daily" is the daily weather array
-    // parameter "offset" is the time zone offset      
+    // parameter "offset" is the time zone offset
+    
+    // First empty the container
+    jForecast.empty();
 
     let thisDay, jCard, jDay, jConditions, jTemp, jWind, jHumidity, jIcon, imgURL;
     // iterate over the array, creating forecast cards
@@ -207,5 +249,28 @@ function setConditions(daytime, code, container) {
     container.toggleClass("overcast", (conditions == "overcast"));
 }
 
+
+function saveSearch(term, coordinates) {
+    // This function saves a search
+    // parameter "term" is the text that was entered
+    // parameter "coordinates" is the latitude and longitude string
+
+    // first we append the button
+    let jNewSearch = $("<a>");
+    jNewSearch.addClass("list-group-item");
+    jNewSearch.text(term);
+    jNewSearch.attr("data-sendto", ("&" + coordinates));
+    jSearchList.prepend(jNewSearch);
+
+    // now let's save to local storage
+    let searchArray = []
+    let savedSearches = localStorage.getItem("savedWeather");
+    // are there any previously saved?
+    if (savedSearches) searchArray = JSON.parse(savedSearches);
+    // now push a new object on, and re-save
+    searchArray.unshift({ city: term, location: ("&" + coordinates) });
+    localStorage.setItem("savedWeather", JSON.stringify(searchArray));
+
+}
 
 // ---- END FUNCTION DECLARATIONS ----

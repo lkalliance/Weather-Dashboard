@@ -24,6 +24,10 @@
     background-color: #cccccc;
 }
 
+li.btn-warning {
+    width: 100%;
+}
+
 .nighttime {
     background-color: #cccccc;
     color: black;

@@ -47,11 +47,31 @@ function getData(where) {
         })
         .then(function(data) {
             console.log(data);
-            let dt = dayjs(data.dt*1000).format("ddd, MMM DD, h:mm A");
+            
+            let dt = dayjs((data.dt + data.timezone)*1000).utc().format("ddd, MMM DD, h:mm A");
+            let dtrise = dayjs((data.sys.sunrise + data.timezone)*1000).utc().format("ddd MMM D YYYY h:mm A");
+            let dtset = dayjs((data.sys.sunset + data.timezone)*1000).utc().format("ddd MMM D YYYY h:mm A");
+
+            console.log("It is now " + dt + " local time");
+            console.log("Sunrise is " + dtrise);
+            console.log("Sunset is " + dtset);
+            let daytime = (data.dt > data.sys.sunrise) && (data.dt < data.sys.sunset);
+            console.log("It is currently " + (daytime?"daytime":"nighttime"));
+
+            let background = "overcast";
+            if (!daytime) background = "nighttime";
+            else if ( data.weather[0].id >= 800 && data.weather[0].id <= 802 ) background = "sunny";
+
+            console.log(background);
+            console.log(data.weather[0].id);
+
+            jWhereWhen.toggleClass("nighttime", (background=="nighttime"));
+            jWhereWhen.toggleClass("sunny", (background=="sunny"));
+            jWhereWhen.toggleClass("overcast", (background=="overcast"));
+
             let jNewSpan = $("<span>");
             jNewSpan.text((" (" + dt + ")"))
             jWhereWhen.text(data.name);
-      //      console.log(jWhereWhen.text());
             jWhereWhen.append(jNewSpan);
 
             jTempNow.text("Temp: " + data.main.temp + "°F");
@@ -102,7 +122,7 @@ function getData(where) {
 
                 Object.entries(dayData).forEach(function(thisDay) {
                     card = $("<div>");
-                    card.addClass("card p-0 col");
+                    card.addClass("card p-0 me-1 col");
                     jForecast.append(card);
                     day = $("<h4>");
                     day.text(thisDay[0]);

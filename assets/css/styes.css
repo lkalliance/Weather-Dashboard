@@ -10,3 +10,18 @@
 #city-and-date {
     position: relative;
 }
+
+.nighttime {
+    background-color: #cccccc;
+    color: black;
+}
+
+.sunny {
+    background-color: cornflowerblue;
+    color: gold;
+}
+
+.overcast {
+    background-color: lightslategray;
+    color: #eeeeee;
+}

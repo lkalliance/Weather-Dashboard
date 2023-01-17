@@ -25,12 +25,10 @@ let citystate;
 
 let latlon = "test";
 
-jSearchBtn.on("click", function() {
-    if(jCityInput.val() == "") return;
-    else {
-    //    console.log(jWhereWhen.text());
-        getData(("q=" + jCityInput.val()));
-    }
+jSearchBtn.on("click", searchSetup);
+jCityInput.on("keyup", function(e) {
+    e.preventDefault();
+    if(e.keyCode == 13) searchSetup();
 })
 
 function getData(where) {
@@ -166,5 +164,29 @@ function getData(where) {
 
 
 // ---- FUNCTION DECLARATIONS ----
+
+function searchCity(city) {
+    // This function initiates the search
+    
+    let latlon = getLatLon(city);
+    console.log(latlon);
+}
+
+function searchSetup(e) {
+    // This function validates and then submits the input field
+
+    if (e) e.preventDefault();
+
+    let testVal = jCityInput.val();
+    // check against a potential list of conditions where validation fails
+    let noGood = (
+        testVal == "" ||
+        testVal.trim() == ""
+    )
+    // if validated, send the contents on to the search...
+    if (!noGood) searchCity(testVal);
+    // ...and if not then return
+    return false;
+}
 
 // ---- END FUNCTION DECLARATIONS ----

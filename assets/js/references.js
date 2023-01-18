@@ -63,7 +63,8 @@ const noCap = {
     del: true,
     san: true,
     de: true,
-    of: true
+    of: true,
+    or: true
 }
 
 

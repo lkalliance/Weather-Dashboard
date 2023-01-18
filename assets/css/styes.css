@@ -43,6 +43,11 @@ li.btn-warning {
     width: 100%;
 }
 
+#alerts {
+    text-align: center;
+    font-size: 1em;
+}
+
 .nighttime {
     background-color: #0c0044;
     color: rgb(255, 255, 255);

@@ -40,7 +40,6 @@ function initialize() {
     // This function does all some page setup tasks
 
     // add some listeners
-
     jSearchBtn.on("click", function(e) {
         // this listener is on the search button
         e.preventDefault();
@@ -148,12 +147,10 @@ function getOneCall(latlon, name, country) {
         .then(function(data) {
             // parameter "data" is the returned object
 
-            console.log(data);
-
-
+            jAlerts.toggleClass("d-none", true);
             drawToday(data.current, data.timezone_offset, name, country);
             drawForecast(data.daily, data.timezone_offset);
-            if ( data.alerts ) drawAlerts( data.alerts );
+            if ( data.alerts ) drawAlerts(data.alerts, data.timezone_offset);
         })
         .catch(function(err) {
             console.log(err);
@@ -244,16 +241,25 @@ function drawForecast(daily, offset) {
 }
 
 
-function drawAlerts( alerts ) {
+function drawAlerts( alerts, offset ) {
     // This function renders any alerts that come in
     // parameter "alerts" is the alerts object
+    // parameter "offset" is the time zone offset
 
-    let jAlertDiv;
+    // first empty the alerts box
+    jAlerts.empty();
+
+    let jAlertDiv, dStart, dEnd;
     for ( let i = 0; i < alerts.length; i++ ) {
+        // for each alert render a div and place it the container
+        dStart = dayjs((alerts[i].start + offset)*1000).utc().format("ddd, h:mm A");
+        dEnd = dayjs((alerts[i].end + offset)*1000).utc().format("ddd, h:mm A");
         jAlertDiv = $("<div>");
-        jAlertDiv.text(alerts[i].event);
+        jAlertDiv.text(alerts[i].event + ": " + dStart + " to " + dEnd);
         jAlerts.append(jAlertDiv);
     }
+    // now make it visible
+    jAlerts.toggleClass("d-none", false);
 }
 
 

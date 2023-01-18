@@ -299,6 +299,14 @@ function saveSearch(term, coordinates, co) {
     // parameter "term" is the text that was entered
     // parameter "coordinates" is the latitude and longitude string
 
+    // first extract the already-saved searches
+    let searchArray = []
+    let savedSearches = localStorage.getItem("savedWeather");
+    if (savedSearches) searchArray = JSON.parse(savedSearches);
+
+    // if this search has already been saved, amscray
+    if (alreadySaved(term, searchArray)) return;
+
     // first we append the button
     let jNewSearch = $("<a>");
     jNewSearch.addClass("list-group-item");
@@ -308,13 +316,23 @@ function saveSearch(term, coordinates, co) {
     jSearchList.prepend(jNewSearch);
 
     // now let's save to local storage
-    let searchArray = []
-    let savedSearches = localStorage.getItem("savedWeather");
-    // are there any previously saved?
-    if (savedSearches) searchArray = JSON.parse(savedSearches);
     // now push a new object on, and re-save
     searchArray.unshift({ city: term, location: ("&" + coordinates), country: co });
     localStorage.setItem("savedWeather", JSON.stringify(searchArray));
+
+    function alreadySaved(lookFor, lookIn) {
+        // This utility returns whether the search has been saved before
+        // parameter "lookFor" is what we're looking for
+        // parameter "lookIn" is where we're looking
+
+        for ( let i = 0; i < lookIn.length; i++ ) {
+            // so is THIS one it?
+            if ( lookIn[i].city == lookFor ) return true;
+        }
+
+        // we didn't find it
+        return false;
+    }
 }
 
 

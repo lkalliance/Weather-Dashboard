@@ -7,6 +7,21 @@
     bottom: 0;
 }
 
+#city-and-date aside {
+    position: absolute;
+    bottom: 4px;
+    right: 10px;
+    font-size: .5em;
+
+}
+
+#city-and-date aside img {
+    position: static;
+    width: 30px;
+    margin-left: 6px;
+    margin-bottom: .2em;
+}
+
 .card li img {
     position: absolute;
     margin-left: 4px;

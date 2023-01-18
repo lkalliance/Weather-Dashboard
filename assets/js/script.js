@@ -55,10 +55,11 @@ function initialize() {
         e.preventDefault();
         let latlon = e.target.dataset.sendto;
         let city = e.target.textContent;
+        let country = e.target.dataset.co;
         // empty the forecast cards
         jForecast.empty();
         // skip the search setup and go right to the data call
-        getOneCall(latlon, city);
+        getOneCall(latlon, city, country);
     });
     jSearchClrBtn.on("click", function(e) {
         // this listener is on the clear saved button
@@ -103,16 +104,27 @@ function searchStart(city) {
             // if nothing is returned, leave
             if(data.length==0) return;
             console.log(data);
+            // make sure first letter is capitalized
+            let cityCap = capitalize(city);
+            // if US, add the state abbreviation
+            if ( data[0].country == "US" && states[data[0].state.replace(/\s/g,"").toLowerCase()] ) {
+                cityCap += ", ";
+                cityCap += states[data[0].state.replace(/\s/g,"").toLowerCase()];
+            }
+            else if ( countries[data[0].country] ) {
+                cityCap += ", ";
+                cityCap += countries[data[0].country];
+            }
             // if something is returned, construct string out of first one
             latlonString = "lat=" + data[0].lat + "&lon=" + data[0].lon;
             // clear out the existing forecast cards
             jForecast.empty();
             // query the weather data
-            getOneCall(latlonString, data[0].name);
+            getOneCall(latlonString, cityCap, data[0].country);
             // clear the input field
             jCityInput.val("");
             // save the search
-            saveSearch(city,latlonString);
+            saveSearch(cityCap,latlonString, data[0].country);
         })
         .catch(function(err) {
             console.log(err);
@@ -120,8 +132,11 @@ function searchStart(city) {
 }
 
 
-function getOneCall(latlon, name) {
+function getOneCall(latlon, name, country) {
     // This function makes the main data call for the weather
+    // parameter "latlon" is the latitude and longitude query strong
+    // parameter "name" is the name of the city
+    // parameter "country" is the two-letter country code
 
     let query = onecallAPIstart + latlon + APIunits + APIexclude + APIkey;
     // do the fetch
@@ -131,7 +146,7 @@ function getOneCall(latlon, name) {
         })
         .then(function(data) {
             // parameter "data" is the returned object
-            drawToday(data.current, data.timezone_offset, name);
+            drawToday(data.current, data.timezone_offset, name, country);
             drawForecast(data.daily, data.timezone_offset);
         })
         .catch(function(err) {
@@ -140,11 +155,12 @@ function getOneCall(latlon, name) {
 }
 
 
-function drawToday(current, offset, city) {
+function drawToday(current, offset, city, country) {
     // This function renders the current weather conditions
     // parameter "current" is the current weather object
     // parameter "offset" is the time zone offset
     // parameter "city" is the city name
+    // parameter "country" is the country code
 
     // construct the day and time string
     let dDateTime = dayjs((current.dt + offset)*1000).utc().format("ddd, MMM DD, h:mm A");
@@ -240,6 +256,7 @@ function drawSavedSearches() {
             jNextLink.attr("href", "#");
             // save the lat/lon search string as an attribute
             jNextLink.attr("data-sendto", savedArray[i].location);
+            jNextLink.attr("data-co", savedArray[i].country);
             jNextLink.text(savedArray[i].city);
             jNextLink.addClass("list-group-item");
             jSearchList.append(jNextLink);
@@ -277,7 +294,7 @@ function setConditions(daytime, code, container) {
 }
 
 
-function saveSearch(term, coordinates) {
+function saveSearch(term, coordinates, co) {
     // This function saves a search
     // parameter "term" is the text that was entered
     // parameter "coordinates" is the latitude and longitude string
@@ -287,6 +304,7 @@ function saveSearch(term, coordinates) {
     jNewSearch.addClass("list-group-item");
     jNewSearch.text(term);
     jNewSearch.attr("data-sendto", ("&" + coordinates));
+    jNewSearch.attr("data-co", co);
     jSearchList.prepend(jNewSearch);
 
     // now let's save to local storage
@@ -295,9 +313,22 @@ function saveSearch(term, coordinates) {
     // are there any previously saved?
     if (savedSearches) searchArray = JSON.parse(savedSearches);
     // now push a new object on, and re-save
-    searchArray.unshift({ city: term, location: ("&" + coordinates) });
+    searchArray.unshift({ city: term, location: ("&" + coordinates), country: co });
     localStorage.setItem("savedWeather", JSON.stringify(searchArray));
+}
 
+
+function capitalize(str) {
+    // This function capitalizes the first letter of each word
+
+    // split the string into words
+    let pieces = str.toLowerCase().split(" ");
+    // now iterate and capitalize the first letter of each
+    for ( let i = 0; i < pieces.length; i++ ) {
+        // only cap word if it's either the first word or not on the no-cap list
+        if ( i == 0 || !noCap[pieces[i]] ) pieces[i] = ( pieces[i].charAt(0).toUpperCase() + pieces[i].substring(1));
+    }
+    return pieces.join(" ");
 }
 
 // ---- END FUNCTION DECLARATIONS ----

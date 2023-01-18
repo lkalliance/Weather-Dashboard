@@ -103,7 +103,6 @@ function searchStart(city) {
 
             // if nothing is returned, leave
             if(data.length==0) return;
-            console.log(data);
             // make sure first letter is capitalized
             let cityCap = capitalize(city);
             // if US, add the state abbreviation

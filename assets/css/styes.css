@@ -43,14 +43,29 @@ li.btn-warning {
     width: 100%;
 }
 
+#alerts {
+    text-align: center;
+    font-size: 1em;
+}
+
 .nighttime {
-    background-color: #cccccc;
-    color: black;
+    background-color: #0c0044;
+    color: rgb(255, 255, 255);
 }
 
 .sunny {
-    background-color: cornflowerblue;
-    color: gold;
+    background-color: rgb(61, 126, 246);
+    color: rgb(255, 255, 255);
+}
+
+.partlysunny {
+    background-color: rgb(88, 125, 194);
+    color: rgb(255, 255, 255);
+}
+
+.snow {
+    background-color: white;
+    color: black;
 }
 
 .overcast {

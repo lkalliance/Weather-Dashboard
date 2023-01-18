@@ -7,7 +7,7 @@ const onecallAPIstart = "https://api.openweathermap.org/data/3.0/onecall?";
 const latlonAPIstart = "https://api.openweathermap.org/geo/1.0/direct?q=";
 const APIlimit = "&limit=5";
 const APIunits = "&units=imperial";
-const APIexclude = "&exclude=minutely,hourly,alerts";
+const APIexclude = "&exclude=minutely,hourly";
 const APIkey = "&appid=7897ccda0965301a098fbfd75fe1b4aa";
 
 // Various DOM elements
@@ -21,6 +21,7 @@ const jForecast = $("#five-day");                   // container for forecast ca
 const jTempNow = $("#temp-now");                    // container for current temp
 const jWindNow = $("#wind-now");                    // container for current wind speed
 const jHumidityNow = $("#humidity-now");            // container for current humidity
+const jAlerts = $("#alerts");                       // container for alerts
 
 
 
@@ -39,7 +40,6 @@ function initialize() {
     // This function does all some page setup tasks
 
     // add some listeners
-
     jSearchBtn.on("click", function(e) {
         // this listener is on the search button
         e.preventDefault();
@@ -146,8 +146,11 @@ function getOneCall(latlon, name, country) {
         })
         .then(function(data) {
             // parameter "data" is the returned object
+
+            jAlerts.toggleClass("d-none", true);
             drawToday(data.current, data.timezone_offset, name, country);
             drawForecast(data.daily, data.timezone_offset);
+            if ( data.alerts ) drawAlerts(data.alerts, data.timezone_offset);
         })
         .catch(function(err) {
             console.log(err);
@@ -234,8 +237,29 @@ function drawForecast(daily, offset) {
         jIcon = $("<img>");
         jIcon.attr("src", imgURL);
         jTemp.append(jIcon);
-       
     }
+}
+
+
+function drawAlerts( alerts, offset ) {
+    // This function renders any alerts that come in
+    // parameter "alerts" is the alerts object
+    // parameter "offset" is the time zone offset
+
+    // first empty the alerts box
+    jAlerts.empty();
+
+    let jAlertDiv, dStart, dEnd;
+    for ( let i = 0; i < alerts.length; i++ ) {
+        // for each alert render a div and place it the container
+        dStart = dayjs((alerts[i].start + offset)*1000).utc().format("ddd, h:mm A");
+        dEnd = dayjs((alerts[i].end + offset)*1000).utc().format("ddd, h:mm A");
+        jAlertDiv = $("<div>");
+        jAlertDiv.text(alerts[i].event + ": " + dStart + " to " + dEnd);
+        jAlerts.append(jAlertDiv);
+    }
+    // now make it visible
+    jAlerts.toggleClass("d-none", false);
 }
 
 
@@ -282,14 +306,34 @@ function setConditions(daytime, code, container) {
     // parameter "container" is where the style is being applied
 
     let conditions;
-    // start with a check of nighttime or daytime and default to overcast
-    conditions = daytime?"overcast":"nighttime";
-    // if it's daytime and the codes are right, switch to sunny
-    if ( daytime && (code >= 800) && (code <= 802) ) conditions = "sunny";
+    // if it's nighttime, just use that
+    if (!daytime) conditions = "nighttime";
+    // ... or based on the code sent, apply a class
+    else {
+        switch(code) {
+            case 800:
+            case 801:
+                conditions = "sunny";
+                break;
+            case 802:
+            case 803:
+                conditions = "partlysunny";
+                break;
+            case 600:
+            case 601:
+            case 602:
+                conditions = "snow";
+                break;
+            default:
+                conditions = "overcast";
+        }
+    }
 
     // now toggle the right classes
     container.toggleClass("nighttime", (conditions == "nighttime"));
     container.toggleClass("sunny", (conditions == "sunny"));
+    container.toggleClass("partlysunny", (conditions == "partlysunny"));
+    container.toggleClass("snow", (conditions == "snow"));
     container.toggleClass("overcast", (conditions == "overcast"));
 }
 

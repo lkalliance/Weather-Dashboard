@@ -80,10 +80,11 @@ function searchSetup() {
         testVal == "" ||
         testVal.trim() == ""
     )
-    // if validated, send the contents on to the search...
-    if (!noGood) searchStart(testVal);
-    // ...and if not then return
-    return false;
+    // if it fails validation, amscrauy
+    if (noGood) return false;
+    // now we break apart the request to check for state
+    let sendThis = inspectSearch(testVal);
+    searchStart(sendThis);    
 }
 
 
@@ -123,7 +124,7 @@ function searchStart(city) {
             // clear the input field
             jCityInput.val("");
             // save the search
-            saveSearch(cityCap,latlonString, data[0].country);
+            saveSearch(cityCap, latlonString, data[0].country);
         })
         .catch(function(err) {
             console.log(err);
@@ -336,16 +337,51 @@ function saveSearch(term, coordinates, co) {
 
 
 function capitalize(str) {
-    // This function capitalizes the first letter of each word
+    // This function strips the string down to the capitalized city name
+    // parameter "str" is the string to be cleansed
 
+    // first get rid of anything after a comma
+    let cleanString = str.split(",")[0];
     // split the string into words
-    let pieces = str.toLowerCase().split(" ");
+    let pieces = cleanString.toLowerCase().split(" ");
     // now iterate and capitalize the first letter of each
     for ( let i = 0; i < pieces.length; i++ ) {
         // only cap word if it's either the first word or not on the no-cap list
         if ( i == 0 || !noCap[pieces[i]] ) pieces[i] = ( pieces[i].charAt(0).toUpperCase() + pieces[i].substring(1));
     }
     return pieces.join(" ");
+}
+
+
+function inspectSearch(entered) {
+    // This function takes apart the search term and returns a search-ready one
+    // parameter "entered" is the search term as entered by the user
+
+    // Does the search have a comma in it?
+    if ( entered.indexOf(",") < 0 ) return entered;
+    else {
+        // break it into pre- and post-comma
+        let pieces = entered.split(",");
+        // trim everything
+        for ( let i = 0; i < pieces.length; i++ ) {
+            pieces[i] = pieces[i].toLowerCase().trim();
+        }
+        // is the second part a US state?
+        let checkThis = pieces[1].replace(/\s/g,"").toLowerCase();
+        if ( states[checkThis] ) {
+            // it is a state; is it a two-letter code?
+            if ( checkThis.length == 2 ) {
+                // if so, keep it as-is
+                pieces[1] = checkThis;
+            } else {
+                // if not, convert it to one
+                pieces[1] = states[checkThis];
+            }
+            pieces.push("US");
+        }
+        // send back the concatenated array
+        return pieces.join(",");
+    }
 }
 
 // ---- END FUNCTION DECLARATIONS ----

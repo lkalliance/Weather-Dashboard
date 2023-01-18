@@ -10,16 +10,17 @@ const APIunits = "&units=imperial";
 const APIexclude = "&exclude=minutely,hourly,alerts";
 const APIkey = "&appid=7897ccda0965301a098fbfd75fe1b4aa";
 
-// Various containers
-const jSearchBtn = $("#search-button");         // search button
-const jCityInput = $("#city-input");            // input field for city search
-const jSearchList = $("#previous-searches");    // ul container for cities searched
-const jWhereWhen = $("#city-and-date");         // h3 with city name and date
-const jCurrent = $("#current");                 // container for current conditions
-const jForecast = $("#five-day");               // container for forecast cards
-const jTempNow = $("#temp-now");                // container for current temp
-const jWindNow = $("#wind-now");                // container for current wind speed
-const jHumidityNow = $("#humidity-now");        // container for current humidity
+// Various DOM elements
+const jSearchBtn = $("#search-button");             // search button
+const jSearchClrBtn = $("#clear-saved-searches");   // clear saved searches button
+const jCityInput = $("#city-input");                // input field for city search
+const jSearchList = $("#previous-searches");        // ul container for cities searched
+const jWhereWhen = $("#city-and-date");             // h3 with city name and date
+const jCurrent = $("#current");                     // container for current conditions
+const jForecast = $("#five-day");                   // container for forecast cards
+const jTempNow = $("#temp-now");                    // container for current temp
+const jWindNow = $("#wind-now");                    // container for current wind speed
+const jHumidityNow = $("#humidity-now");            // container for current humidity
 
 
 
@@ -50,6 +51,7 @@ function initialize() {
         if(e.keyCode == 13) searchSetup();
     });
     jSearchList.on("click", "a", function(e) {
+        // this listener is for clicking a saved search
         e.preventDefault();
         let latlon = e.target.dataset.sendto;
         let city = e.target.textContent;
@@ -57,24 +59,14 @@ function initialize() {
         jForecast.empty();
         // skip the search setup and go right to the data call
         getOneCall(latlon, city);
-    })
+    });
+    jSearchClrBtn.on("click", function(e) {
+        // this listener is on the clear saved button
+        e.preventDefault();
+        clearSavedSearches();
+    });
 
-    //render the saved searches
-    let rawSaved = localStorage.getItem("savedWeather");
-    let savedArray = [], jNextLink;
-    if (rawSaved) {
-        savedArray = JSON.parse(rawSaved);
-        console.log(savedArray);
-        for ( let i = 0; i < savedArray.length; i++ ) {
-            jNextLink = $("<a>");
-            jNextLink.attr("href", "#");
-            jNextLink.attr("data-sendto", savedArray[i].location);
-            jNextLink.text(savedArray[i].city);
-            jNextLink.addClass("list-group-item");
-            jSearchList.append(jNextLink);
-        }
-    }
-
+    drawSavedSearches();
 }
 
 
@@ -149,7 +141,7 @@ function getOneCall(latlon, name) {
 
 
 function drawToday(current, offset, city) {
-    // OMG will this actually work????
+    // This function renders the current weather conditions
     // parameter "current" is the current weather object
     // parameter "offset" is the time zone offset
     // parameter "city" is the city name
@@ -179,7 +171,7 @@ function drawToday(current, offset, city) {
 
 
 function drawForecast(daily, offset) {
-    // This function gets the 5-day forecast and constructs that section
+    // This function renders the 5-day forecast
     // parameter "daily" is the daily weather array
     // parameter "offset" is the time zone offset
     
@@ -228,6 +220,41 @@ function drawForecast(daily, offset) {
         jTemp.append(jIcon);
        
     }
+}
+
+
+function drawSavedSearches() {
+    // This function renders the saved search buttons
+
+    // clear out the area just in case
+    jSearchList.empty();
+    // grab the stored data
+    let rawSaved = localStorage.getItem("savedWeather");
+    let savedArray = [], jNextLink;
+    if (rawSaved) {
+        // if there is any data, parse it
+        savedArray = JSON.parse(rawSaved);
+        // iterate over the array, create the buttons
+        for ( let i = 0; i < savedArray.length; i++ ) {
+            jNextLink = $("<a>");
+            jNextLink.attr("href", "#");
+            // save the lat/lon search string as an attribute
+            jNextLink.attr("data-sendto", savedArray[i].location);
+            jNextLink.text(savedArray[i].city);
+            jNextLink.addClass("list-group-item");
+            jSearchList.append(jNextLink);
+        }
+    }
+}
+
+
+function clearSavedSearches() {
+    // This function erases all the saved searches
+
+    // first clear the existing area
+    jSearchList.empty();
+    // now empty the local storage
+    localStorage.setItem("savedWeather", "");
 }
 
 

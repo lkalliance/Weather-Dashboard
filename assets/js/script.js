@@ -103,12 +103,17 @@ function searchStart(city) {
             // if nothing is returned, leave
             if(data.length==0) return;
             console.log(data);
+            // add the two-letter state abbreviation
+            if(data[0].country == "US") {
+                city += ", ";
+                city += states[data[0].state.replace(" ","").toLowerCase()];
+            }
             // if something is returned, construct string out of first one
             latlonString = "lat=" + data[0].lat + "&lon=" + data[0].lon;
             // clear out the existing forecast cards
             jForecast.empty();
             // query the weather data
-            getOneCall(latlonString, data[0].name);
+            getOneCall(latlonString, city);
             // clear the input field
             jCityInput.val("");
             // save the search

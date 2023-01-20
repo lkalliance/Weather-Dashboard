@@ -74,6 +74,7 @@ const states = {
     ky: true,
     la: true,
     ma: true,
+    me: true,
     mi: true,
     mn: true,
     ms: true,

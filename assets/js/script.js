@@ -49,7 +49,7 @@ function initialize() {
         e.preventDefault();
         if(e.keyCode == 13) searchSetup();
     });
-    jSearchList.on("click", "a", function(e) {
+    jSearchList.on("click", ".saved", function(e) {
         // this listener is for clicking a saved search
         e.preventDefault();
         let latlon = e.target.dataset.sendto;
@@ -60,8 +60,13 @@ function initialize() {
         // skip the search setup and go right to the data call
         getOneCall(latlon, city, country);
     });
+    jSearchList.on("click", ".delete", function(e) {
+        // this listener is for deleting a saved search
+        e.preventDefault();
+        removeSavedSearch(e.target.dataset.whichone);
+    })
     jSearchClrBtn.on("click", function(e) {
-        // this listener is on the clear saved button
+        // this listener is on the clear all saved button
         e.preventDefault();
         clearSavedSearches();
     });
@@ -219,7 +224,7 @@ function drawForecast(daily, offset) {
         // create the temperature range and append it
         jTemp = $("<li>");
         jTemp.addClass("list-group-item pe-5");
-        jTemp.text("Temp: " + Math.round(thisDay.temp.min) + "/" + Math.round(thisDay.temp.max) + "°F");
+        jTemp.text("Temp: " + Math.round(thisDay.temp.min) + " to " + Math.round(thisDay.temp.max) + "°F");
         jConditions.append(jTemp);
         // create the high windspeed and append it
         jWind = $("<li>");
@@ -278,15 +283,23 @@ function drawSavedSearches() {
         // if there is any data, parse it
         savedArray = JSON.parse(rawSaved);
         // iterate over the array, create the buttons
+        let jNextLI, jNextLink, jNextClose;
         for ( let i = 0; i < savedArray.length; i++ ) {
-            jNextLink = $("<a>");
-            jNextLink.attr("href", "#");
+            jNextLI = $("<li>");
+            jNextLI.addClass("list-group-item");
+            jNextLink = $("<button>");
+            jNextClose = $("<button>");
             // save the lat/lon search string as an attribute
+            jNextLink.addClass("saved");
             jNextLink.attr("data-sendto", savedArray[i].location);
             jNextLink.attr("data-co", savedArray[i].country);
             jNextLink.text(savedArray[i].city);
-            jNextLink.addClass("list-group-item");
-            jSearchList.append(jNextLink);
+            jNextClose.addClass("delete");
+            jNextClose.attr("data-whichone", i);
+            jNextClose.text("X");
+            jNextLI.append(jNextLink);
+            jNextLI.append(jNextClose);
+            jSearchList.append(jNextLI);
         }
     }
 }
@@ -355,17 +368,23 @@ function saveSearch(term, coordinates, co) {
     if (alreadySaved(term, searchArray)) return;
 
     // first we append the button
-    let jNewSearch = $("<a>");
-    jNewSearch.addClass("list-group-item");
+    /* let jNewSearch = $("<button>");
+    jNewSearch.addClass("saved");
+    let jNewClose = $("<button>");
+    jNewClose.addClass("delete");
+    let jNewLI = $("<li>");
+    jNewLI.addClass("list-group-item");
     jNewSearch.text(term);
     jNewSearch.attr("data-sendto", ("&" + coordinates));
     jNewSearch.attr("data-co", co);
-    jSearchList.prepend(jNewSearch);
+    jSearchList.prepend(jNewSearch); */
 
-    // now let's save to local storage
-    // now push a new object on, and re-save
+    // push a new object onto the array, and re-save
     searchArray.unshift({ city: term, location: ("&" + coordinates), country: co });
     localStorage.setItem("savedWeather", JSON.stringify(searchArray));
+    // clear the existing searches and re-draw
+    jSearchList.empty;
+    drawSavedSearches();
 
     function alreadySaved(lookFor, lookIn) {
         // This utility returns whether the search has been saved before
@@ -380,6 +399,25 @@ function saveSearch(term, coordinates, co) {
         // we didn't find it
         return false;
     }
+}
+
+
+function removeSavedSearch(clicked) {
+    // This function removes a single clicked saved search
+    // parameter "clicked" is the index of the clicked search
+
+    console.log(clicked);
+
+    // extract the stored saved searches
+    let rawSaved = localStorage.getItem("savedWeather");
+    let savedArray = JSON.parse(rawSaved);
+    // remove the specific index
+    savedArray.splice(clicked, 1);
+    // resave it into local storage
+    localStorage.setItem("savedWeather", JSON.stringify(savedArray));
+    // empty the saved search area and redraw
+    jSearchList.empty();
+    drawSavedSearches();
 }
 
 

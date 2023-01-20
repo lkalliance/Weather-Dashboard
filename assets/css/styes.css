@@ -1,3 +1,7 @@
+header {
+    background-image: linear-gradient(to right, darkblue, white);
+}
+
 #display #city-and-date span {
     font-size: .75em;
 }
@@ -55,7 +59,9 @@ li.btn-warning {
     justify-content: center;
 }
 
-
+#previous-searches .close:hover span {
+    font-weight: 800;
+}
 
 .nighttime {
     background-color: #0c0044;

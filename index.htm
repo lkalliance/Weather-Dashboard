@@ -12,9 +12,9 @@
     <header>
         <h1>Weather Dashboard</h1>
     </header>
-    <main class="container ms-2 me-2">
+    <main class="container mx-3 mx-sm-5">
         <div class="row">
-            <section id="search" class="col-3">
+            <section id="search" class="col col-12 ps-0 ps-sm-2 col-sm-4 col-md-3">
                 <label for="city-input" class="form-label">Search for a City:</label>
                 <input type="text" id="city-input" class="form-control" aria-describedby="city-search">
                 <div id="city-search" class="form-text">Enter just the city, or "city, state" or "city, country"</div>
@@ -23,19 +23,20 @@
                 </section>
                 <button id="clear-saved-searches" class="btn btn-outline-primary btn-sm w-100 mt-2">Clear search history</button>
             </section>
-            <section id="display" class="col-9">
-                <section class="card me-1">
-                    <h2 id="city-and-date" class="card-header">Search for a city</h2>
-                    <ul id="current" class="list-group list-group-flush">
+            <section id="display" class="col col-12 col-sm-8 col-md-9 container">
+                <section class="card row">
+                    <h2 id="city-and-date" class="card-header col col-12">Search for a city</h2>
+                    <ul id="current" class="list-group list-group-flush col col-12 p-0">
                         <li id="temp-now" class="list-group-item">Temp: </li>
                         <li id="wind-now" class="list-group-item">Wind: </li>
                         <li id="humidity-now" class="list-group-item">Humidity: </li>
                     </ul>
                 </section>
-                <section class="container p-0 mt-3">
-                    <h3 class="fs-4">5-Day Forecast:</h3>
-                    <aside id="alerts" class="rounded-pill text-white bg-danger fw-bold p-2 mb-2 d-none"></aside>
-                    <div id="five-day" class="row ms-0 me-0">
+                <section class="mt-3 row">
+                    <h3 class="fs-4 col col-12 px-0">5-Day Forecast:</h3>
+                    <aside id="alerts" class="col col-12 px-0"></aside>
+                    <div class="col col-12 px-0 container">
+                        <div id="five-day" class="row g-1"></div>
                     </div>
                 </section>
             </section>

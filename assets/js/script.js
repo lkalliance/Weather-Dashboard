@@ -285,7 +285,6 @@ function drawSavedSearches() {
     savedArray = JSON.parse(rawSaved);
     // savedArray might be null if there is no stored value yet
     if ( ! savedArray ) return;
-    console.log(!savedArray);
     // if there is anything, iterate over the array, create the buttons
     if ( savedArray.length ) {
         let jNextLI, jNextLink, jNextClose, jCloseSpan;

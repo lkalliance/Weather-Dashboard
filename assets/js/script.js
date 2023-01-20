@@ -25,7 +25,6 @@ const jAlerts = $("#alerts");                       // container for alerts
 
 
 
-
 // ---- INITIALIZATION ----
 
 initialize();
@@ -205,7 +204,7 @@ function drawForecast(daily, offset) {
         dDate = dayjs((thisDay.dt + offset)*1000).utc().format("ddd, MMM DD");
         // create the main card and append it
         jCard = $("<div>");
-        jCard.addClass("card p-0 me-1 col");
+        jCard.addClass("col col-12 col-md-6 col-lg-4 col-xl-3 card border-0 mb-3");
         jForecast.append(jCard);
         // create the title with the date and append it
         jDay = $("<h4>");
@@ -220,7 +219,7 @@ function drawForecast(daily, offset) {
         // create the temperature range and append it
         jTemp = $("<li>");
         jTemp.addClass("list-group-item pe-5");
-        jTemp.text("Temp: " + Math.round(thisDay.temp.min) + " - " + Math.round(thisDay.temp.max) + "°F");
+        jTemp.text("Temp: " + Math.round(thisDay.temp.min) + "/" + Math.round(thisDay.temp.max) + "°F");
         jConditions.append(jTemp);
         // create the high windspeed and append it
         jWind = $("<li>");
@@ -249,13 +248,17 @@ function drawAlerts( alerts, offset ) {
     // first empty the alerts box
     jAlerts.empty();
 
-    let jAlertDiv, dStart, dEnd;
+    let jAlertDiv, dStart, dEnd, jSpan;
     for ( let i = 0; i < alerts.length; i++ ) {
         // for each alert render a div and place it the container
         dStart = dayjs((alerts[i].start + offset)*1000).utc().format("ddd, h:mm A");
         dEnd = dayjs((alerts[i].end + offset)*1000).utc().format("ddd, h:mm A");
         jAlertDiv = $("<div>");
-        jAlertDiv.text(alerts[i].event + ": " + dStart + " to " + dEnd);
+        jSpan = $("<strong>");
+        jSpan.text(alerts[i].event);
+        jAlertDiv.addClass("rounded-pill text-danger flex-fill py-2 px-4 mb-2 text-nowrap border border-danger");
+        jAlertDiv.text(dStart + " to " + dEnd);
+        jAlertDiv.prepend(jSpan);
         jAlerts.append(jAlertDiv);
     }
     // now make it visible

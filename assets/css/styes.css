@@ -1,21 +1,12 @@
+/* ---- HEADER STYLES ---- */
+
 header {
     background-color: slateblue;
 }
+
 header h1 {
     font-family: Unbounded, Arial, Helvetica, sans-serif;
     color: white;
-}
-
-.grayed-out {
-    color: #cccccc;
-}
-
-#city-search {
-    font-size: .7em;
-}
-
-#five-day .card {
-    border: 0;
 }
 
 header h1 .material-symbols-outlined {
@@ -27,69 +18,37 @@ header h1 .material-symbols-outlined {
   color: lightblue;
 }
 
-    
-#display #city-and-date span {
-    font-size: .75em;
+
+
+/* ---- MAIN DISPLAY STYLES ---- */
+
+main {
+    width: 85%;
 }
 
-#city-and-date img {
-    position: absolute;
-    bottom: -3px;
+
+
+/* ---- SEARCH COLUMN STYLES ---- */
+
+#city-search {
+    font-size: .7em;
 }
 
-#city-and-date aside {
-    position: absolute;
-    bottom: 4px;
-    right: 10px;
-    font-size: .5em;
-
+#previous-searches .close:hover span {
+    font-weight: 800;
 }
 
-#city-and-date aside img {
-    position: static;
-    width: 30px;
-    margin-left: 6px;
-    margin-bottom: .2em;
-}
 
-.card li img {
-    position: absolute;
-    margin-left: 4px;
-    bottom: 0;
-    width: 40px;
-}
 
-#city-and-date {
-    position: relative;
-}
+/* ---- WEATHER DISPLAY STYLES ---- */
 
 .card li {
     position: relative;
     background-color: #cccccc;
 }
 
-main {
-    width: 85%;
-}
-
-li.btn-warning {
-    width: 100%;
-}
-
-#alerts strong {
-    display: block;
-    
-}
-
-#alerts {
-    text-align: center;
-    font-size: .8em;
-    line-height: 1.2em;
-    justify-content: center;
-}
-
-#previous-searches .close:hover span {
-    font-weight: 800;
+.grayed-out {
+    color: #cccccc;
 }
 
 .nighttime {
@@ -117,4 +76,48 @@ li.btn-warning {
 .overcast {
     background-color: lightslategray;
     color: #eeeeee;
+}
+
+
+
+/* ---- CURRENT WEATHER STYLES ---- */
+
+#city-and-date {
+    position: relative;
+}
+
+#city-and-date span {
+    font-size: .75em;
+}
+
+#city-and-date img {
+    position: absolute;
+    bottom: -3px;
+}
+
+#five-day .card {
+    border: 0;
+}
+
+
+
+/* ---- 5-DAY FORECAST STYLES ---- */
+
+#five-day .card li img {
+    position: absolute;
+    margin-left: 4px;
+    bottom: 0;
+    width: 40px;
+}
+
+#alerts {
+    text-align: center;
+    font-size: .8em;
+    line-height: 1.2em;
+    justify-content: center;
+}
+
+#alerts strong {
+    display: block;
+    
 }

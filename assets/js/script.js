@@ -192,8 +192,8 @@ function drawToday(current, offset, city, country) {
     jNewSpan.text((" (" + dDateTime + ")"))
     jWhereWhen.append(jNewSpan);
     // fill in the temp, wind and humidity
-    jTempNow.text("Temp: " + current.temp + "°F");
-    jWindNow.text("Wind: " + current.wind_speed + " MPH");
+    jTempNow.text("Temp: " + Math.round(current.temp) + "°F");
+    jWindNow.text("Wind: " + Math.round(current.wind_speed) + " MPH");
     jHumidityNow.text("Humidity: " + current.humidity + "%");
     // now add the icon
     let imgURL = "https://openweathermap.org/img/wn/" + current.weather[0].icon + ".png";
@@ -210,6 +210,8 @@ function drawForecast(daily, offset) {
     
     // First empty the container
     jForecast.empty();
+
+    console.log(daily);
 
     let thisDay, jCard, jDay, jConditions, jTemp, jWind, jHumidity, jIcon, imgURL;
     // iterate over the array, creating forecast cards

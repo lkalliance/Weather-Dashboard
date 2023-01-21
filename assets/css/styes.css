@@ -1,7 +1,18 @@
-header {
-    background-image: linear-gradient(to right, darkblue, white);
+header h1 {
+    font-family: Unbounded, Arial, Helvetica, sans-serif;
+    color: white;
 }
 
+header h1 .material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48;
+  color: lightblue;
+}
+
+    
 #display #city-and-date span {
     font-size: .75em;
 }

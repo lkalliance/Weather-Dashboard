@@ -179,6 +179,8 @@ function drawToday(current, offset, city, country) {
     setConditions(daytime, current.weather[0].id, jWhereWhen);
     // put the city name into the headline
     jWhereWhen.text(city);
+    // make sure it's not grayed out
+    jWhereWhen.removeClass("grayed-out");
     // create the time indicator and attach it
     let jNewSpan = $("<span>");
     jNewSpan.text((" (" + dDateTime + ")"))
@@ -217,7 +219,7 @@ function drawForecast(daily, offset) {
         // create the title with the date and append it
         jDay = $("<h4>");
         jDay.text(dDate);
-        jDay.addClass("card-header fs-6 fw-bold");
+        jDay.addClass("card-header fs-6");
         setConditions(true, thisDay.weather[0].id, jDay);
         jCard.append(jDay);
         // create the ul to hold the various conditions and append it

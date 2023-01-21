@@ -219,8 +219,7 @@ function drawForecast(daily, offset) {
         dDate = dayjs((thisDay.dt + offset)*1000).utc().format("ddd, MMM DD");
         // create the main card and append it
         jCard = $("<div>");
-        // jCard.addClass("col col-12 col-md-6 col-lg-4 col-xl card border-0 mb-3");
-        jCard.addClass("col-xl card mb-2");
+        jCard.addClass("col card mb-2");
         jForecast.append(jCard);
         // create the title with the date and append it
         jDay = $("<h4>");

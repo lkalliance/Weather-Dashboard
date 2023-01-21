@@ -11,12 +11,12 @@
     <title>Document</title>
 </head>
 <body>
-    <header class="pt-2 pb-1 pt-sm-3 pb-sm-2 mb-3 mb-sm-4 bg-success text-center border border-bottom">
+    <header class="pt-2 pb-1 pt-sm-3 pb-sm-2 mb-3 mb-sm-4 text-center border border-bottom">
         <h1 class="fs-2 fs-sm-1"><span class="material-symbols-outlined d-none d-sm-inline">air</span><span class="material-symbols-outlined d-none d-sm-inline">sunny</span> Weather Dashboard <span class="material-symbols-outlined d-none d-sm-inline">thunderstorm</span><span class="material-symbols-outlined d-none d-sm-inline">ac_unit</span></h1>
     </header>
     <main class="container w-75">
         <div class="row">
-            <section id="search" class="col col-12 col-sm-6 col-md-4 col-lg-3 ps-0 ps-sm-2 pe-0 pe-sm-3 mb-3">
+            <section id="search" class="col-12 col-sm-6 col-md-4 col-lg-3 ps-0 ps-sm-2 pe-0 pe-sm-3 mb-3">
                 <label for="city-input" class="form-label fw-bold">Search for a City:</label>
                 <input type="text" id="city-input" class="form-control" aria-describedby="city-search">
                 <div id="city-search" class="form-text">Enter just the city, or "city, state" or "city, country"</div>
@@ -24,9 +24,9 @@
                 <ul id="previous-searches" class="list-group mt-2"></ul>
                 <button id="clear-saved-searches" class="btn btn-outline-primary btn-sm w-100 mt-2 d-none">Clear search history</button>
             </section>
-            <section id="display" class="col col-12 col-sm-6 col-md-8 col-lg-9 container">
+            <section id="display" class="col-12 col-sm-6 col-md-8 col-lg-9 container">
                 <section class="card row">
-                    <h2 id="city-and-date" class="card-header col col-12 pe-5 fw-light grayed-out">search</h2>
+                    <h2 id="city-and-date" class="card-header col-12 pe-5 fw-light grayed-out">search</h2>
                     <ul id="current" class="list-group list-group-flush col col-12 p-0">
                         <li id="temp-now" class="list-group-item">Temp: </li>
                         <li id="wind-now" class="list-group-item">Wind: </li>
@@ -34,12 +34,12 @@
                     </ul>
                 </section>
                 <section class="mt-3 row">
-                    <h3 class="fs-4 col col-12 px-0">5-Day Forecast:</h3>
-                    <aside class="col col-12 px-0 container">
+                    <h3 class="fs-4 col-12 px-0">5-Day Forecast:</h3>
+                    <aside class="col-12 px-0 container">
                         <div id="alerts" class="row mx-0 g-1"></div>
                     </aside>
-                    <div id="five-day" class="col col-12 px-0 d-flex flex-wrap">
-                        <!-- div id="five-day" class="row g-1"></div -->
+                    <div class="col-12 px-0 container">
+                        <div id="five-day" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-5 g-1"></div>
                     </div>
                 </section>
             </section>

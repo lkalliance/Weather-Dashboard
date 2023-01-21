@@ -271,7 +271,7 @@ function drawAlerts( alerts, offset ) {
         jAlertDiv = $("<div>");
         jSpan = $("<strong>");
         jSpan.text(alerts[i].event);
-        jAlertDiv.addClass("rounded-pill text-danger border border-danger col mb-2 py-2 px-3 text-nowrap");
+        jAlertDiv.addClass("rounded-pill text-danger border border-danger col mb-2 py-2 px-3");
         jAlertDiv.text(dStart + " to " + dEnd);
         jAlertDiv.prepend(jSpan);
         jAlerts.append(jAlertDiv);

@@ -8,7 +8,7 @@ header {
 
 #city-and-date img {
     position: absolute;
-    bottom: 0;
+    bottom: -3px;
 }
 
 #city-and-date aside {
@@ -29,8 +29,7 @@ header {
 .card li img {
     position: absolute;
     margin-left: 4px;
-    top: 0;
-    right: 2px;
+    bottom: 0;
     width: 40px;
 }
 
@@ -38,9 +37,17 @@ header {
     position: relative;
 }
 
+#five-day .card {
+    flex: 1 1 200px;
+}
+
 .card li {
     position: relative;
     background-color: #cccccc;
+}
+
+main {
+    width: 85%;
 }
 
 li.btn-warning {

@@ -10,6 +10,10 @@ header h1 {
     color: #cccccc;
 }
 
+#city-search {
+    font-size: .7em;
+}
+
 #five-day .card {
     border: 0;
 }

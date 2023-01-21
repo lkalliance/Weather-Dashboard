@@ -75,6 +75,9 @@ function initialize() {
 }
 
 
+
+// SEARCH FUNCTIONS
+
 function searchSetup() {
     // This function validates and then submits the input field
 
@@ -163,6 +166,9 @@ function getOneCall(latlon, name, country) {
         })
 }
 
+
+
+// PAGE RENDER FUNCTIONS
 
 function drawToday(current, offset, city, country) {
     // This function renders the current weather conditions
@@ -328,6 +334,59 @@ function clearSavedSearches() {
 }
 
 
+
+// UTILITY FUNCTIONS
+
+function saveSearch(term, coordinates, co) {
+    // This function saves a search
+    // parameter "term" is the text that was entered
+    // parameter "coordinates" is the latitude and longitude string
+
+    // first extract the already-saved searches
+    let searchArray = []
+    let savedSearches = localStorage.getItem("savedWeather");
+    if (savedSearches) searchArray = JSON.parse(savedSearches);
+
+    // if this search has already been saved, amscray
+    if (alreadySaved(term, searchArray)) return;
+    // push a new object onto the array, and re-save
+    searchArray.unshift({ city: term, location: ("&" + coordinates), country: co });
+    localStorage.setItem("savedWeather", JSON.stringify(searchArray));
+    // re-draw the saved searches
+    drawSavedSearches();
+
+    function alreadySaved(lookFor, lookIn) {
+        // This utility returns whether the search has been saved before
+        // parameter "lookFor" is what we're looking for
+        // parameter "lookIn" is where we're looking
+
+        for ( let i = 0; i < lookIn.length; i++ ) {
+            // so is THIS one it?
+            if ( lookIn[i].city == lookFor ) return true;
+        }
+
+        // we didn't find it
+        return false;
+    }
+}
+
+
+function removeSavedSearch(clicked) {
+    // This function removes a single clicked saved search
+    // parameter "clicked" is the index of the clicked search
+
+    // extract the stored saved searches
+    let rawSaved = localStorage.getItem("savedWeather");
+    let savedArray = JSON.parse(rawSaved);
+    // remove the specific index
+    savedArray.splice(clicked, 1);
+    // resave it into local storage
+    localStorage.setItem("savedWeather", JSON.stringify(savedArray));
+    // empty the saved search area and redraw
+    drawSavedSearches();
+}
+
+
 function setConditions(daytime, code, container) {
     // This function applies a class to the main card header
     // parameter "daytime" is a boolean: is it daytime?
@@ -364,69 +423,6 @@ function setConditions(daytime, code, container) {
     container.toggleClass("partlysunny", (conditions == "partlysunny"));
     container.toggleClass("snow", (conditions == "snow"));
     container.toggleClass("overcast", (conditions == "overcast"));
-}
-
-
-function saveSearch(term, coordinates, co) {
-    // This function saves a search
-    // parameter "term" is the text that was entered
-    // parameter "coordinates" is the latitude and longitude string
-
-    // first extract the already-saved searches
-    let searchArray = []
-    let savedSearches = localStorage.getItem("savedWeather");
-    if (savedSearches) searchArray = JSON.parse(savedSearches);
-
-    // if this search has already been saved, amscray
-    if (alreadySaved(term, searchArray)) return;
-
-    // first we append the button
-    /* let jNewSearch = $("<button>");
-    jNewSearch.addClass("saved");
-    let jNewClose = $("<button>");
-    jNewClose.addClass("delete");
-    let jNewLI = $("<li>");
-    jNewLI.addClass("list-group-item");
-    jNewSearch.text(term);
-    jNewSearch.attr("data-sendto", ("&" + coordinates));
-    jNewSearch.attr("data-co", co);
-    jSearchList.prepend(jNewSearch); */
-
-    // push a new object onto the array, and re-save
-    searchArray.unshift({ city: term, location: ("&" + coordinates), country: co });
-    localStorage.setItem("savedWeather", JSON.stringify(searchArray));
-    // clear the existing searches and re-draw
-    drawSavedSearches();
-
-    function alreadySaved(lookFor, lookIn) {
-        // This utility returns whether the search has been saved before
-        // parameter "lookFor" is what we're looking for
-        // parameter "lookIn" is where we're looking
-
-        for ( let i = 0; i < lookIn.length; i++ ) {
-            // so is THIS one it?
-            if ( lookIn[i].city == lookFor ) return true;
-        }
-
-        // we didn't find it
-        return false;
-    }
-}
-
-
-function removeSavedSearch(clicked) {
-    // This function removes a single clicked saved search
-    // parameter "clicked" is the index of the clicked search
-
-    // extract the stored saved searches
-    let rawSaved = localStorage.getItem("savedWeather");
-    let savedArray = JSON.parse(rawSaved);
-    // remove the specific index
-    savedArray.splice(clicked, 1);
-    // resave it into local storage
-    localStorage.setItem("savedWeather", JSON.stringify(savedArray));
-    // empty the saved search area and redraw
-    drawSavedSearches();
 }
 
 

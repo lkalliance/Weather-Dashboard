@@ -1,3 +1,4 @@
+// Reference of US states and territories to validate user input
 const states = {
     alabama: "AL",
     alaska: "AK",
@@ -111,17 +112,7 @@ const states = {
 }
 
 
-const noCap = {
-    a: true,
-    the: true,
-    del: true,
-    san: true,
-    de: true,
-    of: true,
-    or: true
-}
-
-
+// Reference to convert two-leter country codes into country names
 const countries = {
     AF: 'Afghanistan',
     AL: 'Albania',
@@ -372,4 +363,16 @@ const countries = {
     ZM: 'Zambia',
     ZW: 'Zimbabwe',
     AX: 'Åland Isl.'
+}
+
+
+// Reference of words not to capitalize
+const noCap = {
+    a: true,
+    the: true,
+    del: true,
+    san: true,
+    de: true,
+    of: true,
+    or: true
 }

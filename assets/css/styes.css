@@ -3,6 +3,10 @@ header h1 {
     color: white;
 }
 
+.grayed-out {
+    color: #cccccc;
+}
+
 header h1 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 0,

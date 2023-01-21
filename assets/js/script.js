@@ -283,9 +283,8 @@ function drawSavedSearches() {
     // grab the stored data
     let rawSaved = localStorage.getItem("savedWeather");
     let savedArray = [], jNextLink;
-    savedArray = JSON.parse(rawSaved);
-    // savedArray might be null if there is no stored value yet
-    if ( ! savedArray ) return;
+    // rawSaved might be null if there is no stored value yet
+    if ( !rawSaved ) return;
     // if there is anything, iterate over the array, create the buttons
     if ( savedArray.length ) {
         let jNextLI, jNextLink, jNextClose, jCloseSpan;

@@ -1,3 +1,6 @@
+header {
+    background-color: slateblue;
+}
 header h1 {
     font-family: Unbounded, Arial, Helvetica, sans-serif;
     color: white;
@@ -5,6 +8,10 @@ header h1 {
 
 .grayed-out {
     color: #cccccc;
+}
+
+#five-day .card {
+    border: 0;
 }
 
 header h1 .material-symbols-outlined {
@@ -50,10 +57,6 @@ header h1 .material-symbols-outlined {
 
 #city-and-date {
     position: relative;
-}
-
-#five-day .card {
-    flex: 1 1 200px;
 }
 
 .card li {
@@ -104,6 +107,7 @@ li.btn-warning {
     background-color: white;
     color: black;
     border: 1px solid #cccccc;
+    margin-bottom: -1px;
 }
 
 .overcast {

@@ -1,3 +1,8 @@
+/* In this Javascript file, I have encased all the consts and the functions for
+initialization and conucting search queries inside the document.ready function.
+Functions that draw the page are listed outside the document.ready function, and
+have their various global containers passed in as parameters. */
+
 dayjs.extend(window.dayjs_plugin_utc);
 
 $(document).ready(function() {
@@ -138,6 +143,7 @@ $(document).ready(function() {
             })
     }
 
+
     function getOneCall(latlon, name, country) {
         // This function makes the main data call for the weather
         // parameter "latlon" is the latitude and longitude query strong
@@ -257,23 +263,26 @@ function drawForecast(daily, offset, forecast) {
 
 function drawAlerts( alerts, offset, container ) {
     // This function renders any alerts that come in
-    // parameter "alerts" is the alerts object
+    // parameter "alerts" is the alerts array
     // parameter "offset" is the time zone offset
     // parameter "container" is the container for the alerts
 
     // first empty the alerts box
     container.empty();
-
+    
     let jAlertDiv, dStart, dEnd, jSpan;
+    // iterate over all alerts and render them
     for ( let i = 0; i < alerts.length; i++ ) {
-        // for each alert render a div and place it the container
+        // grab and format the alert's start and end times
         dStart = dayjs((alerts[i].start + offset)*1000).utc().format("ddd, h:mm A");
         dEnd = dayjs((alerts[i].end + offset)*1000).utc().format("ddd, h:mm A");
+        // create DOM nodes, style and fill them
         jAlertDiv = $("<div>");
         jSpan = $("<strong>");
         jSpan.text(alerts[i].event);
         jAlertDiv.addClass("rounded-pill text-danger border border-danger col mb-2 py-2 px-3");
         jAlertDiv.text(dStart + " to " + dEnd);
+        // append everything
         jAlertDiv.prepend(jSpan);
         container.append(jAlertDiv);
     }
@@ -300,19 +309,24 @@ function drawSavedSearches(list, button) {
     if ( savedArray.length ) {
         let jNextLI, jNextLink, jNextClose, jCloseSpan;
         for ( let i = 0; i < savedArray.length; i++ ) {
+            // create the DOM nodes we'll need
             jNextLI = $("<li>");
             jNextLink = $("<button>");
             jNextClose = $("<button>");
             jCloseSpan = $("<span>");
-            // save the lat/lon search string as an attribute
+            // add classes to the LI
             jNextLI.addClass("list-group-item btn-outline-warning p-0 d-flex");
+            // add classes and reference attributes to the main button
             jNextLink.addClass("saved btn flex-fill text-start");
             jNextLink.attr("data-sendto", savedArray[i].location);
             jNextLink.attr("data-co", savedArray[i].country);
             jNextLink.text(savedArray[i].city);
+            // add classes and reference attribute to the "remove" button
             jNextClose.addClass("delete btn ps-1 fw-lighter text-danger close");
             jNextClose.attr("data-whichone", i);
+            // this is for the stylized "x" for the "remove" button
             jCloseSpan.html("&times;");
+            // do all the appending
             jNextClose.append(jCloseSpan);
             jNextLI.append(jNextLink);
             jNextLI.append(jNextClose);

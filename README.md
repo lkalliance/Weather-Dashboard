@@ -6,7 +6,7 @@ This is a web app that allows a user to get the current and projected weather fr
 
 You an access the application at [this location](https://lkalliance.github.io/Weather-Dashboard/).
 
-(SCREEN SHOTS HERE)
+<img src="./assets/images/weather-dashboard-screenshot.png" width=500>
 
 ## Usage
 
@@ -42,6 +42,17 @@ The design is responsive. On very small screens, the search and search history a
 How to interpret a search attempt involves a trade-offs. I decided that in the absence of the user adding a state or country, I would show the first result that comes back. My testing example was Athens: just "Athens" returns Athens, Greece, while "Athens, Georgia" or "Athens, GA" or even "Athens, US" returns Athens, Georgia.
 
 The weather icons are ones suggested (and provided by) OpenWeatherMaps.org. The color-coding of title bars involved some decision-making: there are many codes that indicate weather conditions. I decided to use 25% or less cloud cover to be "sunny", 50% cloud cover to be "partly sunny", and anything else to be "overcast". "Snow" is tied to there being a certain amount of snow. "Overcast", in this sense, is essentially the default.
+
+## Future additions
+
+Some future additions may include:
+
+* More displayed data
+* Clickable alerts to show the complete text of the alert
+* Setting default city to show on load
+* °F/°C toggle
+* Explicit ask to save searches rather than automatic saves
+* More robust feedback on failed searches
 
 ## Credits
 

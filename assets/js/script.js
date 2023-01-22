@@ -26,7 +26,6 @@ $(document).ready(function() {
 
     initialize();
     
-
     
     // ---- FUNCTION DECLARATIONS ----
 

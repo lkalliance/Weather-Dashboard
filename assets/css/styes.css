@@ -121,3 +121,18 @@ main {
     display: block;
     
 }
+
+
+/* ---- HOVER STATE SENSOR ---- */
+/* This media query removes hover state formatting on the saved searches
+when there is no hover in the interface. That is otherwise distracting. */
+
+@media (hover: none) {
+    #previous-searches .close:hover span {
+        font-weight: 100;
+    }
+
+    #previous-searches li.btn-outline-warning:hover {
+        background-color: white;
+    }
+}

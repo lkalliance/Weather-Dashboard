@@ -73,6 +73,11 @@ $(document).ready(function() {
             e.preventDefault();
             clearSavedSearches(jSearchList, jSearchClrBtn);
         });
+        jWhereWhen.on("click", function(e) {
+            // this listener puts focus on the search input on title bar click
+            e.preventDefault();
+            jCityInput.focus();
+        })
         
         drawSavedSearches(jSearchList, jSearchClrBtn);
     }

@@ -43,6 +43,8 @@ How to interpret a search attempt involves a trade-offs. I decided that in the a
 
 The weather icons are ones suggested (and provided by) OpenWeatherMaps.org. The color-coding of title bars involved some decision-making: there are many codes that indicate weather conditions. I decided to use 25% or less cloud cover to be "sunny", 50% cloud cover to be "partly sunny", and anything else to be "overcast". "Snow" is tied to there being a certain amount of snow. "Overcast", in this sense, is essentially the default.
 
+At the last moment it seemed to me that the placeholder "city" text that is in the current weather header on load had the appearance of a highly-styled search field; I combated that by placing a click listener on the header that puts focus on the actual search field.
+
 ## Future additions
 
 Some future additions may include:
